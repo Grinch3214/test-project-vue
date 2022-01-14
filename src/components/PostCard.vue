@@ -2,15 +2,15 @@
   <div class="post-card">
       <el-card
         shadow="always"
-        v-for="(post, index) in posts"
+        v-for="(post) in posts"
         :key="post.id"
         :style="{margin: '8px 0'}"
       >
           <h3 class="post-card__card-title">{{ post.title }}</h3>
-          <p v-if="!showMore[index]" class="post-card__card-body">{{ formatedCommentText(post.body) }}</p>
+          <p v-if="!post._isShow" class="post-card__card-body">{{ formatedCommentText(post.body) }}</p>
           <p v-else class="post-card__card-body">{{ post.body }}</p>
           
-          <el-button  @click="readMore(index, showMore[index])" type="text">Read more</el-button>
+          <el-button  @click="$set(post, '_isShow', !post._isShow)" type="text">Read more</el-button>
     </el-card>
   </div>
 </template>
@@ -30,7 +30,7 @@ export default {
   created() {
       fetch('https://jsonplaceholder.typicode.com/posts')
       .then(response => response.json())
-      .then(json => this.posts = json);
+      .then(json => this.posts = json)
     },
     methods: {
       formatedCommentText(cut) {
@@ -40,9 +40,6 @@ export default {
       str = strChange.join(' ')
       return str + '...'
     },
-    readMore(index, isShow) {
-      this.showMore = this.posts.map((e, i) => i === index && !isShow) 
-    }
   },
 };
 </script>
